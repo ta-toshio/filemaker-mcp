@@ -12,23 +12,36 @@ FileMaker Data API を通じてデータベース分析・メタデータ抽出�
 
 ## クイックスタート
 
-### 1. インストール
+### 1. ビルド
 
 ```bash
 pnpm install
 pnpm run build
 ```
 
-### 2. 環境変数の設定
+### 2. Claude Code での MCP 設定
+
+#### 方法 A: コマンドラインで追加（推奨）
 
 ```bash
-cp .env.example .env
-# .env を編集して接続情報を設定
+claude mcp add filemaker \
+  --transport stdio \
+  --scope project \
+  --env FM_SERVER=https://your-server.com \
+  --env FM_DATABASE=your-database \
+  --env FM_USERNAME=your-username \
+  --env FM_PASSWORD=your-password \
+  -- node /path/to/jaou-ensatsu-kokuryu-filemaker-mcp/dist/index.js
 ```
 
-### 3. Claude Desktop での MCP 設定
+| スコープオプション | 説明 |
+|------------------|------|
+| `--scope user` | 全プロジェクト共通（`~/.claude.json` に保存） |
+| `--scope project` | 現在のプロジェクトのみ（`.mcp.json` に保存、Git管理可能） |
 
-`claude_desktop_config.json` に以下を追加:
+#### 方法 B: 設定ファイルを直接編集
+
+`~/.claude.json` に以下を追加:
 
 ```json
 {
@@ -47,9 +60,11 @@ cp .env.example .env
 }
 ```
 
-### 4. Claude での使用
+> **Note**: Claude Desktop を使用する場合は `~/Library/Application Support/Claude/claude_desktop_config.json`（macOS）に同様の設定を追加してください。
 
-Claude Desktop を起動すると、FileMaker MCP ツールが利用可能になります。
+### 3. Claude Code での使用
+
+Claude Code を起動すると、FileMaker MCP ツールが利用可能になります。
 
 ```
 # 使用例（Claude への指示）
@@ -220,40 +235,22 @@ Claude Desktop を起動すると、FileMaker MCP ツールが利用可能にな
 
 ## 開発
 
+### 環境構築
+
 ```bash
-# 依存関係インストール
 pnpm install
-
-# 開発モード
-pnpm run dev
-
-# ビルド
-pnpm run build
-
-# テスト実行
-pnpm test
-
-# 型チェック
-pnpm run typecheck
-
-# リント
-pnpm run lint
-pnpm run lint:fix
+cp .env.example .env  # テスト実行用
 ```
 
----
+### コマンド
 
-## セキュリティ
-
-本プロジェクトは以下のセキュリティ要件を実装しています:
-
-- **SEC-001**: パスワードのログ出力マスキング
-- **SEC-002**: 環境変数によるログレベル制御
-- **SEC-003**: ファイルシステムへの書き込み禁止
-- **SEC-005**: HTTPS通信の強制
-- **SEC-006**: SSL検証無効化時の警告
-
-詳細は [docs/SECURITY.md](docs/SECURITY.md) を参照してください。
+```bash
+pnpm run build       # ビルド
+pnpm test            # テスト実行
+pnpm run typecheck   # 型チェック
+pnpm run lint        # リント
+pnpm run lint:fix    # リント自動修正
+```
 
 ---
 
@@ -263,14 +260,6 @@ pnpm run lint:fix
 - レイアウトに配置されたフィールドのみ操作可能
 - `fm_infer_relationships` の結果は推測であり、実際のリレーション定義と異なる場合あり
 - 読み取り専用（レコードの作成・更新・削除は非対応）
-
----
-
-## 関連ドキュメント
-
-- [設計書](../docs/JAOU_ENSATSU_KOKURYU_DESIGN.md)
-- [実装計画](../docs/IMPLEMENTATION_PLAN.md)
-- [セキュリティ](docs/SECURITY.md)
 
 ---
 
