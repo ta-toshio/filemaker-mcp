@@ -263,6 +263,19 @@ pnpm run lint:fix    # リント自動修正
 
 ---
 
+## 参考プロジェクト
+
+本プロジェクトは以下のオープンソースプロジェクトを参考に設計・実装しました：
+
+| プロジェクト | 作者 | 説明 |
+|-------------|------|------|
+| [FileMaker-Server-DAPI-MCP](https://github.com/fsans/FileMaker-Server-DAPI-MCP) | Francesc Sans | FileMaker Data API MCP サーバー（接続管理機能） |
+| [filemaker-mcp-server](https://github.com/maxpetrusenko/filemaker-mcp-server) | Max Petrusenko | DDRエクスポート・リレーション分析機能を持つ MCP サーバー |
+
+両プロジェクトともMITライセンスで公開されています。
+
+---
+
 ## ライセンス
 
 MIT
