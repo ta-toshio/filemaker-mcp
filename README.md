@@ -19,9 +19,13 @@ pnpm install
 pnpm run build
 ```
 
-### 2. Claude Code での MCP 設定
+### 2. MCP 設定
 
-#### 方法 A: コマンドラインで追加（推奨）
+本MCPサーバーは、Claude Code、Cursor、Codex など MCP 対応のAIエディタで使用できます。
+
+#### Claude Code
+
+**方法 A: コマンドラインで追加（推奨）**
 
 ```bash
 claude mcp add filemaker \
@@ -39,7 +43,7 @@ claude mcp add filemaker \
 | `--scope user` | 全プロジェクト共通（`~/.claude.json` に保存） |
 | `--scope project` | 現在のプロジェクトのみ（`.mcp.json` に保存、Git管理可能） |
 
-#### 方法 B: 設定ファイルを直接編集
+**方法 B: 設定ファイルを直接編集**
 
 `~/.claude.json` に以下を追加:
 
@@ -62,12 +66,66 @@ claude mcp add filemaker \
 
 > **Note**: Claude Desktop を使用する場合は `~/Library/Application Support/Claude/claude_desktop_config.json`（macOS）に同様の設定を追加してください。
 
-### 3. Claude Code での使用
+#### Cursor
 
-Claude Code を起動すると、FileMaker MCP ツールが利用可能になります。
+`~/.cursor/mcp.json`（グローバル）または `.cursor/mcp.json`（プロジェクト）に以下を追加:
+
+```json
+{
+  "mcpServers": {
+    "filemaker": {
+      "command": "node",
+      "args": ["/path/to/jaou-ensatsu-kokuryu-filemaker-mcp/dist/index.js"],
+      "env": {
+        "FM_SERVER": "https://your-server.com",
+        "FM_DATABASE": "your-database",
+        "FM_USERNAME": "your-username",
+        "FM_PASSWORD": "your-password"
+      }
+    }
+  }
+}
+```
+
+設定後、Cursor の設定画面（File → Preferences → Cursor Settings → MCP）で「Available Tools」に表示されることを確認してください。
+
+#### Codex (OpenAI)
+
+**方法 A: コマンドラインで追加**
+
+```bash
+codex mcp add filemaker \
+  --env FM_SERVER=https://your-server.com \
+  --env FM_DATABASE=your-database \
+  --env FM_USERNAME=your-username \
+  --env FM_PASSWORD=your-password \
+  -- node /path/to/jaou-ensatsu-kokuryu-filemaker-mcp/dist/index.js
+```
+
+**方法 B: 設定ファイルを直接編集**
+
+`~/.codex/config.toml` に以下を追加:
+
+```toml
+[mcp_servers.filemaker]
+command = "node"
+args = ["/path/to/jaou-ensatsu-kokuryu-filemaker-mcp/dist/index.js"]
+
+[mcp_servers.filemaker.env]
+FM_SERVER = "https://your-server.com"
+FM_DATABASE = "your-database"
+FM_USERNAME = "your-username"
+FM_PASSWORD = "your-password"
+```
+
+> **Note**: Codex は CLI と VSCode 拡張機能で設定ファイルを共有しています。
+
+### 3. 使用例
+
+MCP設定後、AIエディタを起動すると FileMaker MCP ツールが利用可能になります。
 
 ```
-# 使用例（Claude への指示）
+# 使用例（AI への指示）
 「FileMaker にログインして、顧客レイアウトのフィールド一覧を取得してください」
 「売上データベースのメタデータをエクスポートしてください」
 「注文テーブルで"東京"を含むレコードを検索してください」
